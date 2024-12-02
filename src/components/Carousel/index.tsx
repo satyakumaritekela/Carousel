@@ -31,7 +31,7 @@ const Carousel: React.FC<{ media: MediaItem[] }> = ({ media }) => {
       </Header>
       <CarouselWrapper ref={containerRef}>
         {visibleItems.map((item, index) => (
-          <CarouselItem key={item.id} active={index === 0}>
+          <CarouselItem key={item.id} active={index === 0} id={item.id}>
             {item.type === "video" && (
               <VideoItem src={item.src} isActive={index === 0} />
             )}
