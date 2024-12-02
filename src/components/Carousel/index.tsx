@@ -13,7 +13,7 @@ import useInfiniteCarousel from "../../hooks/useInfiniteCarousel";
 import VideoItem from "../VideoItem";
 
 const Carousel: React.FC<{ media: MediaItem[] }> = ({ media }) => {
-  const { containerRef, handleNext, handlePrev, currentIndex } =
+  const { containerRef, handleNext, handlePrev, visibleItems } =
     useInfiniteCarousel(media);
 
   return (
@@ -30,10 +30,10 @@ const Carousel: React.FC<{ media: MediaItem[] }> = ({ media }) => {
         </Controls>
       </Header>
       <CarouselWrapper ref={containerRef}>
-        {media.map((item, index) => (
-          <CarouselItem key={item.id} active={index === currentIndex}>
+        {visibleItems.map((item, index) => (
+          <CarouselItem key={item.id} active={index === 0}>
             {item.type === "video" && (
-              <VideoItem src={item.src} isActive={index === currentIndex} />
+              <VideoItem src={item.src} isActive={index === 0} />
             )}
           </CarouselItem>
         ))}

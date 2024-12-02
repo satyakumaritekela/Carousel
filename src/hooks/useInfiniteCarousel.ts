@@ -2,68 +2,75 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { MediaItem } from "../components/Carousel/types";
 
 const useInfiniteCarousel = (media: MediaItem[]) => {
-  const [currentIndex, setCurrentIndex] = useState(0); // Start at the first item
+  const [visibleItems, setVisibleItems] = useState<MediaItem[]>([]); // Items currently rendered
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const totalItems = media.length;
 
-  // Get circular index to handle infinite scrolling
-  const getCircularIndex = (index: number) => {
-    return (index + totalItems) % totalItems;
+  // Determine how many items to show based on screen width
+  const getVisibleItemCount = () => {
+    const width = window.innerWidth;
+    if (width >= 1200) return 5;
+    if (width >= 768) return 3;
+    return 1;
   };
 
-  // Navigation Handlers
-  const handleNext = () => {
-    setCurrentIndex((prev) => getCircularIndex(prev + 1));
-  };
+  const updateVisibleItems = useCallback(
+    (startIndex: number) => {
+      const visibleCount = getVisibleItemCount();
+      const newVisibleItems = [];
+      for (let i = 0; i < visibleCount + 1; i++) {
+        newVisibleItems.push(media[(startIndex + i) % totalItems]);
+      }
+      setVisibleItems(newVisibleItems);
+    },
+    [media, totalItems]
+  );
 
-  const handlePrev = () => {
-    setCurrentIndex((prev) => getCircularIndex(prev - 1));
-  };
-
-  // Smoothly scroll to the current index
-  const scrollToIndex = useCallback(() => {
+  const scrollToPosition = () => {
     const container = containerRef.current;
     if (container) {
-      const itemWidth = container.firstChild
-        ? (container.firstChild as HTMLElement).clientWidth + 12 // Item width + gap
-        : 312;
-  
-      const totalItems = media.length;
-      const circularIndex = (currentIndex + totalItems) % totalItems; // Ensure the index wraps circularly
-  
-      const scrollPosition = circularIndex * itemWidth;
-  
-      // Rearrange items in the DOM for seamless circular scrolling
-      const children = Array.from(container.children) as HTMLElement[];
-      if (circularIndex === 0) {
-        // Move the last item to the beginning
-        container.insertBefore(children[children.length - 1], children[0]);
-      } else if (circularIndex === totalItems - 1) {
-        // Move the first item to the end
-        container.appendChild(children[0]);
-      }
-  
-      // Apply smooth transition
-      container.style.transition = "transform 0.5s ease-in-out";
-      container.style.transform = `translateX(-${scrollPosition}px)`;
-  
-      // Reset transition after the animation for seamless experience
-      setTimeout(() => {
-        container.style.transition = "none";
-        container.style.transform = `translateX(0px)`; // Reset transform to align with the rearranged items
-      }, 500);
+      container.scrollTo({
+        left: 0,
+        behavior: "smooth",
+      });
     }
-  }, [currentIndex, media.length]);
-  
+  };
 
+  // Handle next action
+  const handleNext = () => {
+    setVisibleItems((prev) => {
+      const nextIndex = (media.indexOf(prev[prev.length - 1]) + 1) % totalItems;
+      const firstItem = prev.slice(1);
+      const nextItem = media[nextIndex];
+      return [...firstItem, nextItem];
+    });
+    scrollToPosition();
+  };
+
+  // Handle previous action
+  const handlePrev = () => {
+    setVisibleItems((prev) => {
+      const prevIndex =
+        (media.indexOf(prev[0]) - 1 + totalItems) % totalItems;
+      const lastItem = prev.slice(0, prev.length - 1);
+      const prevItem = media[prevIndex];
+      return [prevItem, ...lastItem];
+    });
+    scrollToPosition();
+  };
+
+  // Adjust visible items when media or screen width changes
   useEffect(() => {
-    scrollToIndex();
-  }, [currentIndex, scrollToIndex]);
+    updateVisibleItems(0); // Start from the first index initially
+    const handleResize = () => updateVisibleItems(0);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [updateVisibleItems]);
 
   return {
     containerRef,
-    currentIndex,
+    visibleItems,
     handleNext,
     handlePrev,
   };
