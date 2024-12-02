@@ -6,7 +6,7 @@ import {
   Controls,
   Button,
   CarouselWrapper,
-  CarouselItem,
+  CarouselItem
 } from "./styles";
 import { MediaItem } from "./types";
 import useInfiniteCarousel from "../../hooks/useInfiniteCarousel";
@@ -31,7 +31,7 @@ const Carousel: React.FC<{ media: MediaItem[] }> = ({ media }) => {
       </Header>
       <CarouselWrapper ref={containerRef}>
         {media.map((item, index) => (
-          <CarouselItem key={item.id} active={index === currentIndex} id={item.id}>
+          <CarouselItem key={item.id} active={index === currentIndex}>
             {item.type === "video" && (
               <VideoItem src={item.src} isActive={index === currentIndex} />
             )}

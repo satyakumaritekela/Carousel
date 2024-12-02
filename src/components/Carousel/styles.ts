@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const Section = styled.section`
   max-width: 100%;
   padding: 20px;
-  background-color: #ECEBE7;
+  background-color: #ecebe7;
   border-radius: 8px;
 `;
 
@@ -28,7 +28,7 @@ export const Button = styled.button`
   position: relative;
   width: 30px;
   height: 30px;
-  background: #F7F8F6;
+  background: #f7f8f6;
   border: none;
   cursor: pointer;
   border-radius: 50%;
@@ -72,9 +72,12 @@ export const CarouselWrapper = styled.div`
 
 export const CarouselItem = styled.div<{ active: boolean }>`
   flex: 0 0 300px; /* Fixed width for each item */
-  height: 532px; /* Fixed height */
   opacity: ${({ active }) => (active ? 1 : 0.5)};
   border-radius: 8px;
   transition: opacity 0.3s ease-in-out;
-  border: ${({ active }) => (active ? "2px solid #69A2FF" : "2px solid transparent")};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
 `;

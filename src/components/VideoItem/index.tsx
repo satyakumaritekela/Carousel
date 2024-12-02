@@ -9,7 +9,8 @@ import Image from "next/image";
 
 const VideoItem = React.forwardRef<HTMLVideoElement, VideoProps>(
   ({ src, isActive }, ref) => {
-    const videoRef = useRef<HTMLVideoElement | null>(null);
+    const internalRef = useRef<HTMLVideoElement | null>(null);
+    const videoRef = (ref as React.MutableRefObject<HTMLVideoElement>) || internalRef;
     const [isPlaying, setIsPlaying] = useState(true);
     const [isMuted, setIsMuted] = useState(false);
 
@@ -42,7 +43,7 @@ const VideoItem = React.forwardRef<HTMLVideoElement, VideoProps>(
     };
 
     return (
-      <VideoContainer>
+      <VideoContainer active={isActive}>
         <Video
           ref={videoRef}
           src={src}
@@ -51,8 +52,7 @@ const VideoItem = React.forwardRef<HTMLVideoElement, VideoProps>(
           playsInline
           autoPlay={isActive}
         />
-        {
-          isActive && 
+        {isActive && (
           <ControlsWrapper>
             <Image
               src={isMuted ? soundOffIcon : soundOnIcon}
@@ -71,7 +71,7 @@ const VideoItem = React.forwardRef<HTMLVideoElement, VideoProps>(
               onClick={handlePlayPause}
             />
           </ControlsWrapper>
-        }
+        )}
       </VideoContainer>
     );
   }

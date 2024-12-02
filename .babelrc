@@ -1,4 +1,5 @@
 {
-  "presets": ["next/babel"],
-  "plugins": [["styled-components", { "ssr": true }]]
+  "presets": ["@babel/preset-env", "@babel/preset-react", "@babel/preset-typescript"],
+  "plugins": [["styled-components", { "ssr": true }]],
+  "transformignorepatterns": ["/node_modules/(?!(some-esm-package|another-esm-package)/)"]
 }
