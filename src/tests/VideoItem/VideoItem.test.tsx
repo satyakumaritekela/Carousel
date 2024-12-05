@@ -1,6 +1,6 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
-import VideoItem from "../../components/VideoItem";
+import VideoItem from "../../components/VideoController";
 
 describe("VideoItem Component", () => {
   it("renders the video with controls hidden", () => {

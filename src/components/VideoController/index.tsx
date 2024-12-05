@@ -7,7 +7,7 @@ import soundOffIcon from "../../public/icons/sound_off.svg";
 import { VideoProps } from "./types";
 import Image from "next/image";
 
-const VideoItem = React.forwardRef<HTMLVideoElement, VideoProps>(
+const VideoController = React.forwardRef<HTMLVideoElement, VideoProps>(
   ({ src, isActive }, ref) => {
     const internalRef = useRef<HTMLVideoElement | null>(null);
     const videoRef = (ref as React.MutableRefObject<HTMLVideoElement>) || internalRef;
@@ -43,7 +43,7 @@ const VideoItem = React.forwardRef<HTMLVideoElement, VideoProps>(
     };
 
     return (
-      <VideoContainer active={isActive}>
+      <VideoContainer>
         <Video
           ref={videoRef}
           src={src}
@@ -77,4 +77,4 @@ const VideoItem = React.forwardRef<HTMLVideoElement, VideoProps>(
   }
 );
 
-export default React.memo(VideoItem);
+export default React.memo(VideoController);
